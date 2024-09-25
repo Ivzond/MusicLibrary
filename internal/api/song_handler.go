@@ -4,6 +4,7 @@ import (
 	"MusicLibrary/internal/domain"
 	"MusicLibrary/internal/service"
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 )
@@ -21,6 +22,16 @@ func (h *SongHandler) GetSongs(w http.ResponseWriter, r *http.Request) {
 	limit, _ := strconv.Atoi(query.Get("limit"))
 	offset, _ := strconv.Atoi(query.Get("offset"))
 	filter := make(map[string]interface{})
+
+	if groupName := query.Get("group"); groupName != "" {
+		filter["group_name"] = groupName
+	}
+	if songName := query.Get("song"); songName != "" {
+		filter["song_name"] = songName
+	}
+	if releaseDate := query.Get("release_date"); releaseDate != "" {
+		filter["release_date"] = releaseDate
+	}
 
 	songs, err := h.service.GetSongs(r.Context(), filter, limit, offset)
 	if err != nil {
@@ -54,7 +65,8 @@ func (h *SongHandler) UpdateSong(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(w, "Invalid song ID", http.StatusBadRequest)
 		return
@@ -70,7 +82,8 @@ func (h *SongHandler) UpdateSong(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SongHandler) DeleteSong(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(w, "Invalid song ID", http.StatusBadRequest)
 		return
@@ -85,7 +98,8 @@ func (h *SongHandler) DeleteSong(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SongHandler) GetLyrics(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(w, "Invalid song ID", http.StatusBadRequest)
 		return

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"MusicLibrary/internal/domain"
+	"MusicLibrary/pkg"
 	"context"
 	"database/sql"
 	"fmt"
@@ -38,8 +39,11 @@ func (r *PostgresSongRepository) GetSongs(ctx context.Context, filter map[string
 	query += fmt.Sprintf(" ORDER BY created_at DESC LIMIT $%d OFFSET $%d", i, i+1)
 	args = append(args, limit, offset)
 
+	fmt.Println("Executing query:", query, args)
+
 	rows, err := r.db.QueryContext(ctx, query, args...)
 	if err != nil {
+		pkg.Error("Ошибка при выполнении запроса", map[string]interface{}{"error": err})
 		return nil, err
 	}
 	defer rows.Close()
