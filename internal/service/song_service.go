@@ -56,6 +56,7 @@ func (s *SongService) UpdateSong(ctx context.Context, updatedSong *domain.Song) 
 	pkg.Info("Обновление данных песни", map[string]interface{}{"song_id": updatedSong.ID})
 
 	currentSong, err := s.repo.GetSongByID(ctx, updatedSong.ID)
+	fmt.Println(currentSong)
 	if err != nil {
 		pkg.Error("Ошибка при получении текущей версии песни", map[string]interface{}{"error": err})
 		return err
@@ -71,7 +72,7 @@ func (s *SongService) UpdateSong(ctx context.Context, updatedSong *domain.Song) 
 		currentSong.Lyrics = updatedSong.Lyrics
 	}
 	if updatedSong.ReleaseDate.IsZero() {
-		currentSong.ReleaseDate = updatedSong.ReleaseDate
+		updatedSong.ReleaseDate = currentSong.ReleaseDate
 	}
 	if updatedSong.URL != "" {
 		currentSong.URL = updatedSong.URL

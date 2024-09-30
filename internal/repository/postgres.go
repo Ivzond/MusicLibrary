@@ -73,6 +73,8 @@ func (r *PostgresSongRepository) GetSongByID(ctx context.Context, id int) (*doma
 
 func (r *PostgresSongRepository) UpdateSong(ctx context.Context, song *domain.Song) error {
 	query := `UPDATE songs SET group_name = $1, song_name = $2, release_date = $3, lyrics = $4, url = $5, updated_at = $6 WHERE id = $7`
+	fmt.Println(query)
+	fmt.Println(song.ReleaseDate)
 	_, err := r.db.ExecContext(ctx, query, song.Group, song.Song, song.ReleaseDate.Format("2006-01-02"), song.Lyrics, song.URL, time.Now(), song.ID)
 	return err
 }

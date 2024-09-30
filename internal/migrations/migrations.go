@@ -11,7 +11,7 @@ func ApplyMigrations(db *sql.DB) error {
 		id SERIAL PRIMARY KEY,
 		group_name VARCHAR(255) NOT NULL,
 		song_name VARCHAR(255) NOT NULL,
-		release_date VARCHAR(255) NOT NULL,
+		release_date DATE NOT NULL,
 		lyrics TEXT NOT NULL,
 		url VARCHAR(500),
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
