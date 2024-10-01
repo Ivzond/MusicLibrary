@@ -2,6 +2,7 @@ package domain
 
 import "time"
 
+// Song - структура песни
 type Song struct {
 	ID          int       `json:"id"`
 	Group       string    `json:"group"`
@@ -13,6 +14,7 @@ type Song struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+// SongDetail - структура детальной информации о песне
 type SongDetail struct {
 	ReleaseDate time.Time `json:"release_date"`
 	Text        string    `json:"text"`

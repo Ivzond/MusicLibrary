@@ -10,20 +10,24 @@ import (
 	"time"
 )
 
+// PostgresSongRepository - репозиторий песен
 type PostgresSongRepository struct {
 	db *sql.DB
 }
 
+// NewPostgresSongRepository - функция создания репозитория
 func NewPostgresSongRepository(db *sql.DB) *PostgresSongRepository {
 	return &PostgresSongRepository{db: db}
 }
 
+// CreateSong - функция создания новой песни
 func (r *PostgresSongRepository) CreateSong(ctx context.Context, song *domain.Song) error {
 	query := `INSERT INTO songs (group_name, song_name, release_date, lyrics, url, created_at, updated_at)
 	          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
 	return r.db.QueryRowContext(ctx, query, song.Group, song.Song, song.ReleaseDate.Format("2006-01-02"), song.Lyrics, song.URL, time.Now(), time.Now()).Scan(&song.ID)
 }
 
+// GetSongs - функция получения списка песен
 func (r *PostgresSongRepository) GetSongs(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]domain.Song, error) {
 	query := `SELECT id, group_name, song_name, release_date, lyrics, url, created_at, updated_at FROM songs WHERE 1=1`
 	var args []interface{}
@@ -61,6 +65,7 @@ func (r *PostgresSongRepository) GetSongs(ctx context.Context, filter map[string
 	return songs, nil
 }
 
+// GetSongByID - функция получения песни по ID
 func (r *PostgresSongRepository) GetSongByID(ctx context.Context, id int) (*domain.Song, error) {
 	query := `SELECT id, group_name, song_name, release_date, lyrics, url, created_at, updated_at FROM songs WHERE id = $1`
 	var song domain.Song
@@ -71,6 +76,7 @@ func (r *PostgresSongRepository) GetSongByID(ctx context.Context, id int) (*doma
 	return &song, nil
 }
 
+// UpdateSong - функция обновления данных песни
 func (r *PostgresSongRepository) UpdateSong(ctx context.Context, song *domain.Song) error {
 	query := `UPDATE songs SET group_name = $1, song_name = $2, release_date = $3, lyrics = $4, url = $5, updated_at = $6 WHERE id = $7`
 	fmt.Println(query)
@@ -79,12 +85,14 @@ func (r *PostgresSongRepository) UpdateSong(ctx context.Context, song *domain.So
 	return err
 }
 
+// DeleteSong - функция удаления песни
 func (r *PostgresSongRepository) DeleteSong(ctx context.Context, id int) error {
 	query := `DELETE FROM songs WHERE id = $1`
 	_, err := r.db.ExecContext(ctx, query, id)
 	return err
 }
 
+// GetSongLyrics - функция получения текста песни
 func (r *PostgresSongRepository) GetSongLyrics(ctx context.Context, id, limit, offset int) (string, error) {
 	query := `SELECT lyrics FROM songs WHERE id = $1`
 	var lyrics string
@@ -102,10 +110,12 @@ func (r *PostgresSongRepository) GetSongLyrics(ctx context.Context, id, limit, o
 	return combineLyrics(verses[start:end]), nil
 }
 
+// splitLyrics - функция разбиения текста песни на куплеты
 func splitLyrics(lyrics string) []string {
 	return strings.Split(lyrics, "\n\n")
 }
 
+// combineLyrics - функция объединения куплетов в текст песни
 func combineLyrics(verses []string) string {
 	return strings.Join(verses, "\n\n")
 }

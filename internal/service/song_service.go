@@ -11,14 +11,17 @@ import (
 	"os"
 )
 
+// SongService - сервис песен
 type SongService struct {
 	repo repository.SongRepository
 }
 
+// NewSongService - функция создания сервиса
 func NewSongService(repo repository.SongRepository) *SongService {
 	return &SongService{repo: repo}
 }
 
+// GetSongs - функция получения списка песен
 func (s *SongService) GetSongs(ctx context.Context, filters map[string]interface{}, limit, offset int) ([]domain.Song, error) {
 	pkg.Info("Получение списка песен с фильтрацией", filters)
 	songs, err := s.repo.GetSongs(ctx, filters, limit, offset)
@@ -30,6 +33,7 @@ func (s *SongService) GetSongs(ctx context.Context, filters map[string]interface
 	return songs, nil
 }
 
+// GetSongLyrics - функция получения текста песни
 func (s *SongService) GetSongLyrics(ctx context.Context, id, limit, offset int) (string, error) {
 	pkg.Info("Получение текста песни", map[string]interface{}{"id": id, "limit": limit, "offset": offset})
 	lyrics, err := s.repo.GetSongLyrics(ctx, id, limit, offset)
@@ -41,6 +45,7 @@ func (s *SongService) GetSongLyrics(ctx context.Context, id, limit, offset int) 
 	return lyrics, err
 }
 
+// DeleteSong - функция удаления песни
 func (s *SongService) DeleteSong(ctx context.Context, id int) error {
 	pkg.Info("Удаление песни", map[string]interface{}{"id": id})
 	err := s.repo.DeleteSong(ctx, id)
@@ -52,6 +57,7 @@ func (s *SongService) DeleteSong(ctx context.Context, id int) error {
 	return nil
 }
 
+// UpdateSong - функция обновления данных песни
 func (s *SongService) UpdateSong(ctx context.Context, updatedSong *domain.Song) error {
 	pkg.Info("Обновление данных песни", map[string]interface{}{"song_id": updatedSong.ID})
 
@@ -87,6 +93,7 @@ func (s *SongService) UpdateSong(ctx context.Context, updatedSong *domain.Song) 
 	return nil
 }
 
+// AddNewSong функция добавления новой песни
 func (s *SongService) AddNewSong(ctx context.Context, group, song string) error {
 	pkg.Info("Добавление новой песни", map[string]interface{}{"group": group, "song": song})
 
@@ -117,6 +124,7 @@ func (s *SongService) AddNewSong(ctx context.Context, group, song string) error 
 	return nil
 }
 
+// fetchSongInfo - функция запроса детальной информации о песне
 func (s *SongService) fetchSongInfo(group, song string) (*domain.SongDetail, error) {
 	pkg.Info("Запрос данных о песне через внешний API", map[string]interface{}{"group": group, "song": song})
 
