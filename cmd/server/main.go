@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "MusicLibrary/docs"
 	"MusicLibrary/internal/api"
 	"MusicLibrary/internal/migrations"
 	"MusicLibrary/pkg"
@@ -32,7 +33,7 @@ func main() {
 	}
 	defer db.Close()
 
-	// Применение миграций
+	// Применение миграций для создания структуры БД
 	err = migrations.ApplyMigrations(db)
 	if err != nil {
 		pkg.Fatal("Ошибка при применении миграций", map[string]interface{}{"error": err})
@@ -44,7 +45,7 @@ func main() {
 	// Запуск HTTP-сервера
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "8080" // Установка порта по умолчанию
 	}
 	pkg.Info("Сервис успешно запущен на порту: "+port, nil)
 	if err := http.ListenAndServe(":"+port, router); err != nil {

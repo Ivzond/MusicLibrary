@@ -7,6 +7,7 @@ import (
 
 var Log = logrus.New()
 
+// InitLogger - функция инициализации логгера
 func InitLogger() {
 	Log.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,

@@ -5,6 +5,7 @@ import (
 	"MusicLibrary/internal/service"
 	"database/sql"
 	"github.com/gorilla/mux"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // InitializeRoutes - функция инициализации роутера
@@ -19,12 +20,14 @@ func InitializeRoutes(db *sql.DB) *mux.Router {
 	// Создание роутера
 	router := mux.NewRouter()
 
-	// Добавление роутеров
+	// Регистрация маршрутов для различных операций над песнями
 	router.HandleFunc("/songs", songHandler.GetSongs).Methods("GET")
 	router.HandleFunc("/songs", songHandler.AddSong).Methods("POST")
 	router.HandleFunc("/songs/{id}", songHandler.UpdateSong).Methods("PUT")
 	router.HandleFunc("/songs/{id}", songHandler.DeleteSong).Methods("DELETE")
 	router.HandleFunc("/songs/{id}", songHandler.GetLyrics).Methods("GET")
+
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	return router
 }

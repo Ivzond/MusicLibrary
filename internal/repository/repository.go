@@ -5,6 +5,7 @@ import (
 	"context"
 )
 
+// SongRepository - интерфейс репозитория для реализации логики взаимодействияс БД
 type SongRepository interface {
 	CreateSong(ctx context.Context, song *domain.Song) error
 	GetSongs(ctx context.Context, filter map[string]interface{}, limit, offset int) ([]domain.Song, error)
